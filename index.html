@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Beacon Analytics</title>
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --muted: #94a3b8;
+      --subtle: #f1f5f9;
+      --blue: #2563eb;
+      --blue-light: #eff6ff;
+      --green: #16a34a;
+      --green-light: #f0fdf4;
+      --red: #dc2626;
+      --red-light: #fef2f2;
+      --slate: #64748b;
+    }
+
+    body {
+      font-family: 'Epilogue', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      height: 56px;
+      display: flex;
+      align-items: center;
+      padding: 0 28px;
+      gap: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-right: 8px;
+    }
+
+    .logo-icon {
+      width: 28px;
+      height: 28px;
+      background: var(--blue);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-text {
+      font-weight: 800;
+      font-size: 15px;
+      letter-spacing: -0.02em;
+    }
+
+    .site-tabs {
+      display: flex;
+      background: var(--subtle);
+      border-radius: 8px;
+      padding: 3px;
+      gap: 2px;
+    }
+
+    .site-tab {
+      padding: 5px 14px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 400;
+      font-size: 13px;
+      font-family: 'Epilogue', sans-serif;
+      transition: all 0.15s;
+    }
+
+    .site-tab.active {
+      background: #fff;
+      color: var(--text);
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .nav-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+
+    .range-tabs {
+      display: flex;
+      background: var(--subtle);
+      border-radius: 8px;
+      padding: 3px;
+      gap: 2px;
+    }
+
+    .range-tab {
+      padding: 4px 12px;
+      border: none;
+      cursor: pointer;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 400;
+      font-size: 12px;
+      font-family: 'Epilogue', sans-serif;
+      transition: all 0.15s;
+    }
+
+    .range-tab.active {
+      background: #fff;
+      color: var(--text);
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    /* BODY */
+    .container {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 28px 28px 60px;
+    }
+
+    .page-header {
+      margin-bottom: 22px;
+    }
+
+    .page-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .page-subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    /* CARDS */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .stats-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 22px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .stat-card-label {
+      font-size: 12px;
+      color: var(--slate);
+      font-weight: 500;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .stat-card-value {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 20px;
+    }
+
+    .badge-green { background: var(--green-light); color: var(--green); }
+    .badge-red { background: var(--red-light); color: var(--red); }
+    .badge-gray { background: var(--subtle); color: var(--slate); }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+
+
+    /* BOTTOM GRID */
+    .bottom-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .bar-row {
+      margin-bottom: 13px;
+    }
+
+    .bar-row-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+      align-items: center;
+    }
+
+    .bar-row-name {
+      font-size: 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .bar-row-count {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .bar-track {
+      height: 4px;
+      background: var(--subtle);
+      border-radius: 99px;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: var(--blue);
+      border-radius: 99px;
+      opacity: 0.7;
+    }
+
+    .table-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .table-row:last-child { border-bottom: none; }
+
+    .table-row-name {
+      font-size: 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ref-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .table-row-right {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .table-row-pct {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .table-row-val {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--blue);
+    }
+
+    code {
+      font-size: 11px;
+      background: var(--subtle);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'DM Mono', monospace;
+    }
+
+    .device-row {
+      margin-bottom: 14px;
+    }
+
+    .device-row-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+
+    .device-name { font-size: 12px; font-weight: 500; }
+
+    .device-bar-track {
+      height: 6px;
+      background: var(--subtle);
+      border-radius: 99px;
+    }
+
+    .device-bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.6s ease;
+    }
+
+
+
+    /* LOADING / ERROR */
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 200px;
+      color: var(--muted);
+      font-size: 14px;
+      gap: 10px;
+    }
+
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--border);
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .error-msg {
+      background: var(--red-light);
+      border: 1px solid #fecaca;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: var(--red);
+      margin-bottom: 20px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .secondary-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .secondary-card-left { }
+    .secondary-card-label { font-size: 12px; color: var(--muted); font-weight: 500; margin-bottom: 4px; }
+    .secondary-card-value { font-size: 22px; font-weight: 800; letter-spacing: -0.03em; }
+    .secondary-card-icon { font-size: 28px; }
+
+    ::-webkit-scrollbar { width: 5px; background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+    /* SESSION EXPLORER */
+    .sessions-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 22px 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .session-row {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+
+    .session-summary {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 16px;
+      cursor: pointer;
+      background: var(--card);
+      transition: background 0.1s;
+      user-select: none;
+    }
+
+    .session-summary:hover { background: var(--subtle); }
+
+    .session-meta {
+      display: flex;
+      gap: 10px;
+      flex: 1;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .session-id {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      min-width: 80px;
+    }
+
+    .session-chip {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 20px;
+      background: var(--subtle);
+      color: var(--slate);
+    }
+
+    .session-chip.blue { background: var(--blue-light); color: var(--blue); }
+
+    .session-duration {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      min-width: 50px;
+      text-align: right;
+    }
+
+    .session-toggle {
+      font-size: 11px;
+      color: var(--muted);
+      transition: transform 0.2s;
+    }
+
+    .session-toggle.open { transform: rotate(180deg); }
+
+    .session-events {
+      display: none;
+      border-top: 1px solid var(--border);
+      background: var(--subtle);
+      padding: 12px 16px;
+    }
+
+    .session-events.open { display: block; }
+
+    .event-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+    }
+
+    .event-row:last-child { border-bottom: none; }
+
+    .event-type-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 20px;
+      min-width: 68px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .event-type-badge.pageview  { background: var(--blue-light); color: var(--blue); }
+    .event-type-badge.click     { background: #fef9c3; color: #854d0e; }
+    .event-type-badge.pageleave { background: var(--green-light); color: var(--green); }
+
+    .event-detail { flex: 1; color: var(--text); line-height: 1.4; }
+    .event-detail .path { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--blue); }
+    .event-detail .sub  { font-size: 11px; color: var(--muted); margin-top: 1px; }
+    .event-time { font-size: 10px; color: var(--muted); font-family: 'DM Mono', monospace; flex-shrink: 0; }
+
+    /* AWS USAGE TAB */
+    .usage-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .usage-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 22px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .usage-card-title {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .usage-metric {
+      margin-bottom: 14px;
+    }
+    .usage-metric-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+    .usage-metric-label {
+      font-size: 12px;
+      color: var(--slate);
+      font-weight: 500;
+    }
+    .usage-metric-value {
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .usage-bar-track {
+      height: 8px;
+      background: var(--subtle);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .usage-bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.6s ease;
+    }
+    .usage-bar-fill.safe   { background: #16a34a; }
+    .usage-bar-fill.warn   { background: #d97706; }
+    .usage-bar-fill.danger { background: #dc2626; }
+    .usage-pct-label {
+      font-size: 11px;
+      margin-top: 3px;
+      color: var(--muted);
+    }
+    .fn-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin-top: 8px;
+    }
+    .fn-table th {
+      text-align: left;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      padding: 4px 8px 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .fn-table td {
+      padding: 7px 8px 7px 0;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+    .fn-table tr:last-child td { border-bottom: none; }
+    .fn-name {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--blue);
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .usage-refresh {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .aws-tab-active {
+      background: #eff6ff !important;
+      color: #2563eb !important;
+      border-color: #bfdbfe !important;
+      font-weight: 700 !important;
+    }
+  </style>
+</head>
+<body>
+
+<nav style="display:none">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <rect x="1" y="7" width="3" height="6" rx="1" fill="white" opacity="0.6"/>
+        <rect x="5.5" y="4" width="3" height="9" rx="1" fill="white" opacity="0.8"/>
+        <rect x="10" y="1" width="3" height="12" rx="1" fill="white"/>
+      </svg>
+    </div>
+    <span class="logo-text">Beacon</span>
+  </div>
+
+  <div class="site-tabs" id="siteTabs"></div>
+
+  <div class="nav-right">
+    <div class="range-tabs" id="rangeTabs">
+      <button class="range-tab active" data-range="24h">24h</button>
+      <button class="range-tab" data-range="7d">7d</button>
+      <button class="range-tab" data-range="30d">30d</button>
+    </div>
+    <button id="awsUsageTabBtn" onclick="showAwsUsageTab()" style="padding:5px 14px;border-radius:6px;border:1px solid var(--border);background:#fff;cursor:pointer;font-size:12px;font-family:Epilogue,sans-serif;color:var(--slate);font-weight:500;">☁️ AWS Usage</button>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="page-header">
+    <h1 class="page-title" id="pageTitle">Loading...</h1>
+    <p class="page-subtitle" id="pageSubtitle">Analytics overview</p>
+  </div>
+
+  <div id="errorMsg" class="error-msg" style="display:none"></div>
+
+  <div id="mainContent">
+    <div class="loading"><div class="spinner"></div> Loading analytics...</div>
+  </div>
+</div>
+
+<script>
+  // ─── CONFIG ───────────────────────────────────────────
+  // TODO: Replace with your API Gateway endpoint URL
+  const STATS_API = 'https://YOUR_API_ID.execute-api.YOUR_REGION.amazonaws.com/prod/stats';
+  // TODO: Replace with your AWS usage endpoint URL
+  const USAGE_API = 'https://YOUR_API_ID.execute-api.YOUR_REGION.amazonaws.com/prod/aws-usage';
+
+  // TODO: Add your tracked sites here. Each entry needs:
+  //   id    — the hostname (or hostname/path) you pass to the tracker script
+  //   label — the display name shown in the dashboard tab
+  const SITES = [
+    { id: 'example.com',        label: 'example.com' },
+    { id: 'another-site.com',   label: 'another-site.com' },
+  ];
+
+  // TODO: Replace with your Cognito User Pool details
+  const COGNITO_REGION    = 'YOUR_REGION';           // e.g. 'us-east-1'
+  const COGNITO_POOL_ID   = 'YOUR_POOL_ID';          // e.g. 'us-east-1_AbCdEfGhI'
+  const COGNITO_CLIENT_ID = 'YOUR_APP_CLIENT_ID';    // e.g. '1abc2defghij3klmno4pqrst'
+  // ──────────────────────────────────────────────────────
+
+  // ─── AUTH ─────────────────────────────────────────────
+  let authToken = sessionStorage.getItem('beacon_token');
+
+  function showLogin(errorMsg) {
+    document.body.innerHTML = `
+      <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f8fafc;font-family:Epilogue,sans-serif">
+        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:40px;width:100%;max-width:380px;box-shadow:0 4px 24px rgba(0,0,0,0.08)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:28px">
+            <div style="width:32px;height:32px;background:#2563eb;border-radius:8px;display:flex;align-items:center;justify-content:center">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="7" width="3" height="6" rx="1" fill="white" opacity="0.6"/><rect x="5.5" y="4" width="3" height="9" rx="1" fill="white" opacity="0.8"/><rect x="10" y="1" width="3" height="12" rx="1" fill="white"/></svg>
+            </div>
+            <span style="font-weight:800;font-size:18px;letter-spacing:-0.02em">Beacon</span>
+          </div>
+          <div style="font-size:13px;color:#94a3b8;margin-bottom:24px">Sign in to view your analytics</div>
+          ${errorMsg ? `<div style="background:#fef2f2;color:#dc2626;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:16px">${errorMsg}</div>` : ''}
+          <input id="loginEmail" type="email" placeholder="Email" style="width:100%;padding:10px 14px;border:1px solid #e2e8f0;border-radius:8px;font-size:14px;font-family:Epilogue,sans-serif;margin-bottom:12px;outline:none;box-sizing:border-box">
+          <input id="loginPassword" type="password" placeholder="Password" style="width:100%;padding:10px 14px;border:1px solid #e2e8f0;border-radius:8px;font-size:14px;font-family:Epilogue,sans-serif;margin-bottom:20px;outline:none;box-sizing:border-box">
+          <button onclick="doLogin()" style="width:100%;padding:11px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;font-family:Epilogue,sans-serif;cursor:pointer">Sign in</button>
+        </div>
+      </div>
+    `;
+    setTimeout(() => {
+      const pw = document.getElementById('loginPassword');
+      if (pw) pw.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+    }, 50);
+  }
+
+  async function doLogin() {
+    const email    = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    if (!email || !password) return showLogin('Please enter your email and password.');
+
+    try {
+      const res = await fetch(`https://cognito-idp.${COGNITO_REGION}.amazonaws.com/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-amz-json-1.1',
+          'X-Amz-Target': 'AWSCognitoIdentityProviderService.InitiateAuth',
+        },
+        body: JSON.stringify({
+          AuthFlow: 'USER_PASSWORD_AUTH',
+          ClientId: COGNITO_CLIENT_ID,
+          AuthParameters: {
+            USERNAME: email,
+            PASSWORD: password,
+          },
+        }),
+      });
+      const data = await res.json();
+      if (data.AuthenticationResult?.IdToken) {
+        authToken = data.AuthenticationResult.IdToken;
+        sessionStorage.setItem('beacon_token', authToken);
+        location.reload();
+      } else {
+        showLogin(data.message || 'Incorrect email or password.');
+      }
+    } catch (e) {
+      showLogin('Login failed. Please try again.');
+    }
+  }
+
+  function signOut() {
+    sessionStorage.removeItem('beacon_token');
+    location.reload();
+  }
+
+  if (!authToken) {
+    showLogin();
+  } else {
+    // Token exists — show the dashboard
+    document.querySelector('nav').style.display = 'flex';
+    initDashboard();
+  }
+
+  function initDashboard() {
+  let activeSite = SITES[0].id;
+  let activeRange = '24h';
+
+  // Add sign out button to nav
+  const navRight = document.querySelector('.nav-right');
+  const signOutBtn = document.createElement('button');
+  signOutBtn.textContent = 'Sign out';
+  signOutBtn.style.cssText = 'padding:5px 14px;border-radius:6px;border:1px solid var(--border);background:#fff;cursor:pointer;font-size:12px;font-family:Epilogue,sans-serif;color:var(--slate)';
+  signOutBtn.onclick = signOut;
+  navRight.appendChild(signOutBtn);
+
+
+  // Build site tabs
+  const siteTabs = document.getElementById('siteTabs');
+  SITES.forEach(site => {
+    const btn = document.createElement('button');
+    btn.className = 'site-tab' + (site.id === activeSite ? ' active' : '');
+    btn.textContent = site.label;
+    btn.addEventListener('click', () => {
+      activeSite = site.id;
+      document.querySelectorAll('.site-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      loadData();
+    });
+    siteTabs.appendChild(btn);
+  });
+
+  // Range tabs
+  document.querySelectorAll('.range-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeRange = btn.dataset.range;
+      document.querySelectorAll('.range-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      loadData();
+    });
+  });
+
+
+
+  async function loadData() {
+    const content = document.getElementById('mainContent');
+    const errorMsg = document.getElementById('errorMsg');
+    errorMsg.style.display = 'none';
+
+    content.innerHTML = '<div class="loading"><div class="spinner"></div> Loading analytics...</div>';
+
+    document.getElementById('pageTitle').textContent = SITES.find(s => s.id === activeSite)?.label || activeSite;
+    document.getElementById('pageSubtitle').textContent = `Analytics overview · Last ${activeRange}`;
+
+    try {
+      const url = `${STATS_API}?site=${encodeURIComponent(activeSite)}&range=${activeRange}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`API returned ${res.status}`);
+      const data = await res.json();
+      renderDashboard(data);
+    } catch (err) {
+      console.error(err);
+      errorMsg.textContent = `Could not load analytics: ${err.message}`;
+      errorMsg.style.display = 'block';
+      content.innerHTML = '<div class="empty-state">No data to display. Make sure your sites are receiving traffic and try again.</div>';
+    }
+  }
+
+  function renderDashboard(data) {
+    const content = document.getElementById('mainContent');
+    const pv = data.pageviews || 0;
+    const vis = data.visitors || 0;
+
+    content.innerHTML = `
+      <!-- STAT CARDS -->
+      <div class="stats-grid">
+        ${statCard('Unique Visitors', vis.toLocaleString(), '👤')}
+        ${statCard('Page Views', pv.toLocaleString(), '📄')}
+      </div>
+
+      <!-- HOW SITE WAS ACCESSED -->
+      <div class="sessions-card" style="margin-bottom:20px">
+        <div class="section-label" style="margin-bottom:16px">How Visitors Found the Site</div>
+        ${renderReferrers(data.referrers)}
+      </div>
+
+      <!-- VISITOR SESSIONS -->
+      <div class="sessions-card">
+        <div class="section-label" style="margin-bottom:16px">Visitor Sessions</div>
+        ${renderVisitors(data.visitorSessions)}
+      </div>
+    `;
+  }
+
+  function statCard(label, value, icon) {
+    return `
+      <div class="card">
+        <div class="stat-card-label">
+          <span>${label}</span>
+          <span>${icon}</span>
+        </div>
+        <div class="stat-card-value">${value}</div>
+      </div>
+    `;
+  }
+
+  function summariseDevices(devices) {
+    if (!devices || !devices.length) return '—';
+    const top = devices.slice().sort((a, b) => b.pct - a.pct)[0];
+    return top ? `${top.name} ${top.pct}%` : '—';
+  }
+
+  function renderReferrers(referrers) {
+    if (!referrers || !referrers.length) return '<div class="empty-state">No referral data yet</div>';
+    const colors = ['#2563eb','#6366f1','#06b6d4','#8b5cf6','#ec4899'];
+    // Filter out localhost and local file references
+    const filtered = referrers.filter(r => !r.name.includes('localhost') && r.name !== 'file' && r.name !== '');
+    if (!filtered.length) return '<div class="empty-state">No external referral data yet</div>';
+    return filtered.map((r, i) => `
+      <div class="table-row">
+        <div class="table-row-name">
+          <div class="ref-dot" style="background:${colors[i % colors.length]}"></div>
+          <span>${r.name === 'direct' ? 'Direct / Typed URL' : r.name}</span>
+        </div>
+        <div class="table-row-right">
+          <span class="table-row-pct">${r.pct}%</span>
+          <span class="table-row-val">${r.visits.toLocaleString()} visit${r.visits !== 1 ? 's' : ''}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  const OS_ICONS = { 'Mac': '🍎', 'Windows': '🪟', 'iOS': '📱', 'Android': '🤖', 'Linux': '🐧', 'ChromeOS': '🌐', 'Unknown': '💻' };
+
+  const COUNTRY_NAMES = { 'US': 'United States', 'GB': 'United Kingdom', 'CA': 'Canada', 'AU': 'Australia', 'DE': 'Germany', 'FR': 'France', 'IN': 'India', 'BR': 'Brazil', 'JP': 'Japan', 'MX': 'Mexico', 'ES': 'Spain', 'IT': 'Italy', 'NL': 'Netherlands', 'SE': 'Sweden', 'NO': 'Norway' };
+
+  // Converts ISO-2 country code (e.g. "US", "GB") to a flag emoji.
+  // Falls back to 🌐 for unknown/missing codes.
+  function getFlagEmoji(code) {
+    if (!code || code === 'XX' || code === 'Unknown' || code.length !== 2) return '🌐';
+    return [...code.toUpperCase()].map(c => String.fromCodePoint(0x1F1E6 - 65 + c.charCodeAt(0))).join('');
+  }
+
+  // Resolves the best available ISO-2 code — handles old records where country was stored as "US".
+  function getCountryCode(v) {
+    if (v.countryCode && v.countryCode !== 'XX' && v.countryCode.length === 2) return v.countryCode.toUpperCase();
+    if (v.country && v.country.length === 2 && v.country !== 'XX') return v.country.toUpperCase();
+    return 'XX';
+  }
+
+  // Formats location as "City, State" for US, "City, Country" for others.
+  function formatLocation(v) {
+    const city   = v.city   && v.city   !== 'Unknown' ? v.city   : null;
+    const region = v.region && v.region !== 'Unknown' ? v.region : null;
+    let country  = v.country && v.country !== 'Unknown' ? v.country : null;
+    // Handle old records where country was stored as ISO code e.g. "US"
+    if (country && country.length === 2) country = COUNTRY_NAMES[country.toUpperCase()] || country;
+
+    if (city && region) return `${city}, ${region}`;
+    if (city && country) return `${city}, ${country}`;
+    if (region && country) return `${region}, ${country}`;
+    return country || 'Unknown';
+  }
+
+  function renderVisitors(visitors) {
+    if (!visitors || !visitors.length) return '<div class="empty-state">No visitors recorded yet</div>';
+
+    const filtered = visitors.filter(v => {
+      // Filter out likely bots (Linux OS with only 1 pageview and no clicks)
+      if (v.os === 'Linux' && v.totalPageViews <= 1 && v.totalClicks === 0) return false;
+      const sessions = v.sessions || [];
+      return sessions.some(s => {
+        const ref = s.referrer || '';
+        const events = s.events || [];
+        const hasRealPath = events.some(e => e.path && !e.path.startsWith('file') && e.path !== '');
+        const isLocal = ref.includes('localhost') || ref.startsWith('file');
+        return !isLocal && (hasRealPath || events.length > 0);
+      });
+    });
+
+    if (!filtered.length) return '<div class="empty-state">No external visitors yet</div>';
+
+    return filtered.map((v, vidx) => {
+      const flag = getFlagEmoji(getCountryCode(v));
+      const locationLabel = formatLocation(v);
+      const deviceIcon = v.device === 'mobile' ? '📱' : v.device === 'tablet' ? '📟' : '🖥️';
+      const osIcon = OS_ICONS[v.os] || '💻';
+      const osLabel = v.os || 'Unknown';
+
+      const lastDate = new Date(v.lastSeen).toLocaleDateString([], { month: 'short', day: 'numeric' });
+      const lastTime = new Date(v.lastSeen).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const sessionCount = v.sessionCount || v.sessions?.length || 0;
+
+      // Render each session inside this visitor
+      const sessionsHtml = (v.sessions || []).map((s, sidx) => {
+        const sDate = new Date(s.firstSeen).toLocaleDateString([], { month: 'short', day: 'numeric' });
+        const sTime = new Date(s.firstSeen).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const uid = `v${vidx}s${sidx}`;
+
+        const eventsHtml = (s.events || []).map(e => {
+          const t = new Date(e.ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+          let detail = '';
+          if (e.type === 'pageview') {
+            detail = `<div class="path">${e.path}</div>`;
+          } else if (e.type === 'click') {
+            detail = `<div class="path">${e.path}</div>`;
+            if (e.elementText) detail += `<div class="sub">Clicked: "${e.elementText.slice(0, 80)}"${e.elementHref ? ` → ${e.elementHref.slice(0, 60)}` : ''}</div>`;
+          } else if (e.type === 'pageleave') {
+            detail = `<div class="path">${e.path}</div>`;
+            if (e.duration) detail += `<div class="sub">Time on page: ${formatDurationJs(e.duration)}</div>`;
+          }
+          return `
+            <div class="event-row">
+              <span class="event-type-badge ${e.type}">${e.type === 'pageleave' ? 'left page' : e.type}</span>
+              <div class="event-detail">${detail}</div>
+              <span class="event-time">${t}</span>
+            </div>`;
+        }).join('');
+
+        return `
+          <div class="session-row" style="margin:8px 0 0 0;border-radius:8px;">
+            <div class="session-summary" onclick="toggleSession('${uid}')">
+              <div class="session-meta">
+                <span style="font-size:11px;color:var(--muted)">Session · ${sDate} at ${sTime}</span>
+                <span class="session-chip blue">${s.pageCount} page${s.pageCount !== 1 ? 's' : ''}</span>
+                <span class="session-chip">${s.clickCount} click${s.clickCount !== 1 ? 's' : ''}</span>
+              </div>
+              <span class="session-duration">${s.totalFormatted}</span>
+              <span class="session-toggle" id="toggle-${uid}">▼</span>
+            </div>
+            <div class="session-events" id="events-${uid}">
+              ${eventsHtml || '<div style="padding:8px;font-size:12px;color:var(--muted)">No detailed events</div>'}
+            </div>
+          </div>`;
+      }).join('');
+
+      return `
+        <div class="session-row">
+          <div class="session-summary" onclick="toggleSession('visitor-${vidx}')">
+            <div class="session-meta">
+              <span>${flag} ${locationLabel}</span>
+              <span class="session-chip">${deviceIcon} ${v.device || 'unknown'}</span>
+              <span class="session-chip">${osIcon} ${osLabel}</span>
+              <span class="session-chip blue">${sessionCount} session${sessionCount !== 1 ? 's' : ''}</span>
+              <span class="session-chip">${v.totalPageViews} page${v.totalPageViews !== 1 ? 's' : ''}</span>
+              <span style="font-size:11px;color:var(--muted)">Last seen ${lastDate} at ${lastTime}</span>
+            </div>
+            <span class="session-toggle" id="toggle-visitor-${vidx}">▼</span>
+          </div>
+          <div class="session-events" id="events-visitor-${vidx}" style="padding: 12px 16px;">
+            ${sessionsHtml}
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function formatDurationJs(ms) {
+    if (!ms || ms <= 0) return '—';
+    const s = Math.round(ms / 1000);
+    if (s < 60) return `${s}s`;
+    const m = Math.floor(s / 60);
+    const rem = s % 60;
+    return rem > 0 ? `${m}m ${rem}s` : `${m}m`;
+  }
+
+  window.toggleSession = function(id) {
+    const events = document.getElementById(`events-${id}`);
+    const toggle = document.getElementById(`toggle-${id}`);
+    if (events) events.classList.toggle('open');
+    if (toggle) toggle.classList.toggle('open');
+  }
+
+
+  // Initial load
+  loadData();
+  } // end initDashboard
+
+  // ─── AWS USAGE TAB ────────────────────────────────────
+  let awsTabActive = false;
+
+  window.showAwsUsageTab = async function() {
+    awsTabActive = true;
+    document.querySelectorAll('.site-tab').forEach(b => b.classList.remove('active'));
+    const btn = document.getElementById('awsUsageTabBtn');
+    btn.classList.add('active');
+    document.getElementById('rangeTabs').style.display = 'none';
+
+    document.getElementById('pageTitle').textContent = 'AWS Usage';
+    document.getElementById('pageSubtitle').textContent = 'Free tier usage · Current month';
+
+    const content = document.getElementById('mainContent');
+    content.innerHTML = '<div class="loading"><div class="spinner"></div> Fetching AWS metrics...</div>';
+
+    try {
+      const res = await fetch(USAGE_API);
+      if (!res.ok) throw new Error(`API returned ${res.status}`);
+      const raw = await res.json();
+      const data = raw.body ? JSON.parse(raw.body) : raw;
+      renderAwsUsage(data);
+    } catch (err) {
+      content.innerHTML = `<div class="error-msg">Could not load AWS usage: ${err.message}</div>`;
+    }
+  };
+
+  document.addEventListener('click', e => {
+    if (e.target.classList.contains('site-tab') && e.target.id !== 'awsUsageTabBtn') {
+      awsTabActive = false;
+      document.getElementById('rangeTabs').style.display = '';
+    }
+  });
+
+  function usageBar(pct) {
+    const cls = pct >= 90 ? 'danger' : pct >= 70 ? 'warn' : 'safe';
+    return `
+      <div class="usage-bar-track">
+        <div class="usage-bar-fill ${cls}" style="width:${pct}%"></div>
+      </div>
+      <div class="usage-pct-label">${pct}% of free tier used</div>
+    `;
+  }
+
+  function usageMetric(label, value, pct) {
+    return `
+      <div class="usage-metric">
+        <div class="usage-metric-header">
+          <span class="usage-metric-label">${label}</span>
+          <span class="usage-metric-value">${value}</span>
+        </div>
+        ${usageBar(pct)}
+      </div>`;
+  }
+
+  function renderAwsUsage(data) {
+    const content = document.getElementById('mainContent');
+    const d = data || {};
+    const generated = d.generatedAt ? new Date(d.generatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--';
+    const monthStartLabel = d.monthStart ? new Date(d.monthStart).toLocaleDateString([], { month: 'short', day: 'numeric' }) : '--';
+
+    // Safe accessors
+    const lam  = d.lambda      || {};
+    const lt   = lam.total     || {};
+    const apig = d.apiGateway  || {};
+    const ses  = d.ses         || {};
+    const ddb  = d.dynamodb    || {};
+    const s3   = d.s3          || {};
+    const cf   = d.cloudfront  || {};
+    const cog  = d.cognito     || {};
+
+    const fnRows = (lam.functions || []).map(fn => `
+      <tr>
+        <td><div class="fn-name" title="${fn.name}">${fn.name}</div></td>
+        <td>${(fn.invocations || 0).toLocaleString()}</td>
+        <td>${(fn.gbSeconds || 0).toLocaleString()}</td>
+        <td style="color:${fn.errors > 0 ? 'var(--red)' : 'var(--muted)'}">${fn.errors || 0}</td>
+        <td style="color:var(--muted)">${fn.memoryMB || 128}MB</td>
+      </tr>`).join('');
+
+    content.innerHTML = `
+      <div class="usage-refresh">Data since ${monthStartLabel} · Refreshed at ${generated}</div>
+      <br>
+
+      <!-- Lambda -->
+      <div class="sessions-card" style="margin-bottom:16px">
+        <div class="usage-card-title">⚡ Lambda <span style="font-weight:400;color:var(--muted);font-size:11px">1M requests / 400K GB-s free/month</span></div>
+        <div class="usage-grid" style="margin-bottom:0">
+          <div>
+            ${usageMetric('Total Invocations', (lt.invocations || 0).toLocaleString() + ' / 1,000,000', lt.invocationsPct || 0)}
+          </div>
+          <div>
+            ${usageMetric('Total GB-Seconds', (lt.gbSeconds || 0).toLocaleString() + ' / 400,000', lt.gbSecondsPct || 0)}
+          </div>
+        </div>
+        <div class="section-label" style="margin-top:20px;margin-bottom:10px">Per Function Breakdown</div>
+        <table class="fn-table">
+          <thead><tr><th>Function</th><th>Invocations</th><th>GB-Seconds</th><th>Errors</th><th>Memory</th></tr></thead>
+          <tbody>${fnRows || '<tr><td colspan="5" style="color:var(--muted);padding:12px 0">No functions found</td></tr>'}</tbody>
+        </table>
+      </div>
+
+      <!-- Row 1 -->
+      <div class="usage-grid">
+        <div class="usage-card">
+          <div class="usage-card-title">🔀 API Gateway <span style="font-weight:400;color:var(--muted);font-size:11px">1M calls/month free</span></div>
+          ${usageMetric('API Calls', (apig.requests || 0).toLocaleString() + ' / 1,000,000', apig.requestsPct || 0)}
+        </div>
+        <div class="usage-card">
+          <div class="usage-card-title">📧 SES <span style="font-weight:400;color:var(--muted);font-size:11px">62,000 emails/month free</span></div>
+          ${usageMetric('Emails Sent', (ses.emails || 0).toLocaleString() + ' / 62,000', ses.emailsPct || 0)}
+        </div>
+      </div>
+
+      <!-- Row 2 -->
+      <div class="usage-grid">
+        <div class="usage-card">
+          <div class="usage-card-title">🗄️ DynamoDB <span style="font-weight:400;color:var(--muted);font-size:11px">25 RCU / 25 WCU free</span></div>
+          ${usageMetric('Read Capacity Units (RCU)', (ddb.rcu || 0).toLocaleString(), ddb.rcuPct || 0)}
+          ${usageMetric('Write Capacity Units (WCU)', (ddb.wcu || 0).toLocaleString(), ddb.wcuPct || 0)}
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">Storage: not available via CloudWatch — check AWS Console</div>
+        </div>
+        <div class="usage-card">
+          <div class="usage-card-title">🪣 S3 <span style="font-weight:400;color:var(--muted);font-size:11px">5GB free</span></div>
+          ${(() => { const gb = s3.storageGB || 0; const mb = s3.storageMB != null ? s3.storageMB : gb * 1024; const label = gb < 1 ? mb.toFixed(1) + ' MB / 5 GB' : gb.toFixed(3) + ' GB / 5 GB'; return usageMetric('Storage Used', label, s3.storageGBPct || 0); })()}
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">GET/PUT request counts require per-bucket metric config in S3</div>
+        </div>
+      </div>
+
+      <!-- Row 3 -->
+      <div class="usage-grid">
+        <div class="usage-card">
+          <div class="usage-card-title">🌐 CloudFront <span style="font-weight:400;color:var(--muted);font-size:11px">1TB data / 10M requests free</span></div>
+          ${usageMetric('Data Transfer Out', (cf.dataTransferGB || 0).toLocaleString() + ' GB / 1,024 GB', cf.dataTransferPct || 0)}
+          ${usageMetric('HTTP Requests', (cf.requests || 0).toLocaleString() + ' / 10,000,000', cf.requestsPct || 0)}
+        </div>
+        <div class="usage-card">
+          <div class="usage-card-title">🔐 Cognito <span style="font-weight:400;color:var(--muted);font-size:11px">50,000 MAU free</span></div>
+          ${usageMetric('Monthly Active Users (sign-ins)', (cog.mau || 0).toLocaleString() + ' / 50,000', cog.mauPct || 0)}
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">${cog.note || ''}</div>
+        </div>
+      </div>
+    `;
+  }
+</script>
+</body>
+</html>
