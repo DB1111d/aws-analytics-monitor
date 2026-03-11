@@ -57,15 +57,6 @@ aws-analytics-monitor/
 
 ---
 
-## Prerequisites
-
-- An [AWS account](https://aws.amazon.com/free/)
-- [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) configured with appropriate permissions
-- [Node.js](https://nodejs.org/) 18+ (for Lambda runtimes and local testing)
-- Basic familiarity with the AWS Console
-
----
-
 ## Setup Guide
 
 ### Step 1 — DynamoDB Table
