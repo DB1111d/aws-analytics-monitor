@@ -271,10 +271,7 @@ A minimal tracker script on your site should:
 
 > **⚠️ Cognito MAU tracking requires a paid Cognito feature.**
 > The CloudWatch `SignInSuccesses` metric is only published when **Advanced Security Features** are enabled on your User Pool — this is a paid Cognito add-on and is **not available on the free tier**. If you are on the free tier, the Cognito panel in the AWS Usage dashboard will always show 0 MAU. This is a Cognito limitation, not a bug in AWS Analytics Monitor.
->
-> If you need MAU tracking without paying for Advanced Security, consider logging sign-in events yourself using a [Cognito Post Authentication Lambda trigger](https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-post-authentication.html) and writing them to DynamoDB.
-
-The usage dashboard auto-discovers your Lambda functions, DynamoDB tables, S3 buckets, and CloudFront distributions — no manual configuration needed beyond the Cognito pool ID.
+> The usage dashboard auto-discovers your Lambda functions, DynamoDB tables, S3 buckets, and CloudFront distributions — no manual configuration needed beyond the Cognito pool ID.
 
 ---
 
@@ -285,12 +282,6 @@ The usage dashboard auto-discovers your Lambda functions, DynamoDB tables, S3 bu
 - Analytics data is only accessible through your authenticated API Gateway endpoints
 - Self-registration is disabled by default in the setup above
 - Visitor hashing should be done server-side or using a privacy-preserving method — avoid storing raw IP addresses
-
----
-
-## Cost Estimate
-
-For a low-traffic personal or portfolio site (under ~50,000 pageviews/month), this entire stack should run within the AWS free tier at **$0/month**. The main cost drivers at scale would be DynamoDB reads and Lambda invocations, both of which have generous free tiers.
 
 ---
 
